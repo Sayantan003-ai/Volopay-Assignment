@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Volopay AR × IndiaFilings: clickable prototype</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#111827;--mu:#6b7280;--bd:#e5e7eb;--ac:#4f46e5;--ok:#047857;--okb:#d1fae5;--wn:#92400e;--wnb:#fef3c7;--rd:#b91c1c;--rdb:#fee2e2;--dr:#374151;--drb:#e5e7eb;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#181b22;--tx:#f3f4f6;--mu:#9ca3af;--bd:#2a2f3a;--ac:#818cf8;--ok:#6ee7b7;--okb:#064e3b;--wn:#fcd34d;--wnb:#451a03;--rd:#fca5a5;--rdb:#450a0a;--dr:#d1d5db;--drb:#2a2f3a;color-scheme:dark}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:18px;margin:0}.sub{color:var(--mu);font-size:13px;margin:2px 0 12px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}.tab{background:transparent;color:var(--mu);border:1px solid var(--bd)}.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.steps{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.st{flex:1;min-width:110px;padding:8px 10px;border:1px solid var(--bd);border-radius:10px;background:var(--card);font-size:13px;color:var(--mu)}
+.st b{display:block;color:var(--tx)}.st.on{border-color:var(--ac)}.st.done b::after{content:" ✓";color:var(--ok)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:12px}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+th{text-align:left;color:var(--mu);font-weight:500;font-size:12px;padding:6px 8px;border-bottom:1px solid var(--bd)}td{padding:10px 8px;border-bottom:1px solid var(--bd)}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600}
+.p-ok{background:var(--okb);color:var(--ok)}.p-wn{background:var(--wnb);color:var(--wn)}.p-dr{background:var(--drb);color:var(--dr)}.p-rd{background:var(--rdb);color:var(--rd)}
+button{font:inherit;border:0;border-radius:9px;padding:9px 14px;cursor:pointer;background:var(--ac);color:#fff;font-weight:600}
+button.g{background:transparent;color:var(--ac);border:1px solid var(--bd)}
+.hint{font-size:13px;color:var(--mu);margin:8px 0 0}
+.box{border:1px dashed var(--bd);border-radius:10px;padding:12px;margin-top:10px;font-size:14px}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.kpi div{border:1px solid var(--bd);border-radius:10px;padding:10px}.kpi b{font-size:22px;display:block}
+.hide{display:none}.note{font-size:12px;color:var(--mu);text-align:center;margin-top:14px}
+</style></head><body><div class="wrap">
+<h1>Volopay AR <span style="color:var(--mu)">× IndiaFilings</span></h1>
+<p class="sub">Clickable mockup. Sample data only; nothing here is a live product.</p>
+<div class="tabs"><button class="tab on" id="t1">Customer's view</button><button class="tab" id="t2">IndiaFilings partner view</button><button class="g" id="reset" style="margin-left:auto">Reset</button></div>
+
+<div id="m1">
+<div class="steps" id="steps"></div>
+<section id="v-dash">
+ <div class="card"><div class="row"><div><b>Invoices</b><div class="sub" style="margin:0">Sharma Traders Pvt Ltd (an IndiaFilings customer)</div></div><button id="newbtn">+ New invoice</button></div>
+ <div class="tw"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Due</th><th>Status</th></tr></thead><tbody id="tb"></tbody></table></div>
+ <p class="hint" id="h-dash">Start by creating and sending an invoice.</p></div>
+ <div class="card hide" id="bank"><b>Bank feed</b><div class="box mono" id="bankrow"></div><div class="box hide" id="matchlog"></div></div>
+</section>
+<section id="v-new" class="hide"><div class="card"><b>New invoice</b>
+ <div class="box">Bill to: <b>Kapoor Foods LLP</b> · Item: Monthly packaging supply · Amount: ₹1,26,000 + GST 18% = <b>₹1,48,680</b> · Due in 15 days</div>
+ <p class="hint">Pay link and bank details are added automatically. Reminders: 3 days before due, on due date, 3 days after.</p>
+ <div class="row" style="margin-top:10px"><button class="g" id="cancel">Back</button><button id="send">Send invoice</button></div></div></section>
+<section id="v-cust" class="hide"><div class="card" style="max-width:420px;margin:0 auto"><b>Sharma Traders Pvt Ltd</b> sent you an invoice
+ <div class="box">Invoice <b>INV-1043</b><br>Amount due <b style="font-size:22px">₹1,48,680</b><br>Due in 15 days</div>
+ <div class="box mono">Pay by bank transfer<br>A/c name: Sharma Traders (via Volopay)<br>A/c no: 2020 0011 8841<br>Ref: INV1043</div>
+ <p class="hint">Sample details. Try both outcomes below.</p>
+ <div class="row" style="margin-top:10px"><button class="g" id="back1">Back to sender</button></div>
+ <div class="row" style="margin-top:8px"><button id="payfull">Pay in full</button><button class="g" id="payshort">Pay ₹1,48,000 (short)</button></div></div></section>
+</div>
+
+<div id="m2" class="hide">
+ <div class="card"><b>IndiaFilings × Volopay AR: partner dashboard</b><div class="sub">Illustrative numbers. The matched count moves as you run the customer flow.</div>
+ <div class="kpi"><div>Referred customers live<b>12</b></div><div>Invoices sent (30 days)<b id="k2">214</b></div><div>Matched automatically<b id="k3">181</b></div><div>Needs review<b id="k4">9</b></div></div>
+ <div class="tw"><table style="margin-top:10px"><thead><tr><th>Customer</th><th>Status</th><th>Plan</th></tr></thead><tbody>
+ <tr><td>Sharma Traders Pvt Ltd</td><td><span class="pill p-ok">Live</span></td><td>AR</td></tr>
+ <tr><td>Mehta Interiors</td><td><span class="pill p-ok">Live</span></td><td>AR</td></tr>
+ <tr><td>Das Logistics</td><td><span class="pill p-wn">Onboarding</span></td><td>AR</td></tr>
+ <tr><td>Rao Textiles</td><td><span class="pill p-dr">Referred</span></td><td>AR</td></tr></tbody></table></div>
+ <p class="hint">Revenue share per live customer is shown here once terms are agreed.</p></div>
+</div>
+<p class="note">Built for a partnership proposal. Screens show planned AR scope and may differ at launch. Accounting sync is a proposed integration.</p>
+</div>
+<script>
+var inv,stage,matched,names=["1. Create","2. Send","3. Customer pays","4. Auto-match","5. Book"];
+var $=function(i){return document.getElementById(i)};
+function init(){inv=[{n:"INV-1040",c:"Mehta Interiors",a:"₹62,300",d:"28 Nov",s:"paid"},{n:"INV-1041",c:"Das Logistics",a:"₹31,500",d:"05 Dec",s:"sent"},{n:"INV-1042",c:"Rao Textiles",a:"₹89,000",d:"—",s:"draft"}];
+ stage=0;matched=0;$("newbtn").classList.remove("hide");$("bank").classList.add("hide");$("matchlog").classList.add("hide");$("h-dash").textContent="Start by creating and sending an invoice.";show("v-dash");render()}
+function pill(s){return {paid:'<span class="pill p-ok">Paid · Matched</span>',sent:'<span class="pill p-wn">Sent</span>',due:'<span class="pill p-wn">Awaiting payment</span>',rev:'<span class="pill p-rd">Needs review</span>',part:'<span class="pill p-wn">Part-paid</span>',draft:'<span class="pill p-dr">Draft</span>'}[s]}
+function show(v){["v-dash","v-new","v-cust"].forEach(function(x){$(x).classList.toggle("hide",x!=v)})}
+function render(){
+ $("tb").innerHTML=inv.map(function(r){return "<tr><td>"+r.n+"</td><td>"+r.c+"</td><td>"+r.a+"</td><td>"+r.d+"</td><td>"+pill(r.s)+"</td></tr>"}).join("");
+ $("steps").innerHTML=names.map(function(t,i){return '<div class="st '+(i==stage?"on ":"")+(i<stage?"done":"")+'"><b>'+t+'</b></div>'}).join("");
+ $("k3").textContent=181+matched;$("k2").textContent=214+(inv.length>3?1:0);$("k4").textContent=9+(inv[0].s=="rev"?1:0);
+}
+function tab(n){$("m1").classList.toggle("hide",n!=1);$("m2").classList.toggle("hide",n!=2);$("t1").classList.toggle("on",n==1);$("t2").classList.toggle("on",n==2)}
+$("t1").onclick=function(){tab(1)};$("t2").onclick=function(){render();tab(2)};$("reset").onclick=function(){init();tab(1)};
+$("newbtn").onclick=function(){stage=0;render();show("v-new")};
+$("cancel").onclick=function(){show("v-dash")};
+$("send").onclick=function(){
+ inv.unshift({n:"INV-1043",c:"Kapoor Foods LLP",a:"₹1,48,680",d:"07 Dec",s:"due"});
+ stage=2;render();$("newbtn").classList.add("hide");
+ $("h-dash").innerHTML='Sent. See what Kapoor Foods sees. <button class="g" id="asc" style="padding:5px 10px;margin-left:6px">View as customer</button>';
+ $("asc").onclick=function(){show("v-cust")};show("v-dash")};
+$("back1").onclick=function(){show("v-dash")};
+function pay(full){
+ stage=3;render();show("v-dash");$("bank").classList.remove("hide");$("matchlog").classList.add("hide");
+ $("bankrow").innerHTML="+ "+(full?"₹1,48,680":"₹1,48,000")+" · NEFT · KAPOOR FOODS LLP/INV1043 · just now";
+ $("h-dash").textContent="Payment arrived with a messy bank reference. Watching it match...";
+ setTimeout(function(){
+  var m=$("matchlog");m.classList.remove("hide");stage=4;
+  if(full){inv[0].s="paid";matched++;render();
+   m.innerHTML="<b>Matched automatically</b><br>Amount equals INV-1043 exactly · reference contains INV1043 · payer matches Kapoor Foods LLP.<br>Reminders stopped. <button id='sync' style='margin-top:8px;padding:6px 12px'>Sync to books</button>";
+   $("h-dash").textContent="Sent, paid and matched with no manual entry.";
+   $("sync").onclick=function(){stage=5;render();$("steps").lastChild.classList.add("done");m.innerHTML+="<br><span class='pill p-ok' style='margin-top:6px'>Entry ready for accounting (planned LEDGERS integration)</span>";this.remove()};
+  }else{inv[0].s="rev";render();
+   m.innerHTML="<b>Flagged for review, not guessed</b><br>Reference and payer match INV-1043, but the amount is ₹680 short.<br><button id='part' style='margin-top:8px;padding:6px 12px'>Record as part-payment</button> <button class='g' id='wo' style='margin-top:8px;padding:6px 12px'>Match and write off ₹680</button>";
+   $("h-dash").textContent="Exceptions go to a person with one clear decision.";
+   $("part").onclick=function(){inv[0].s="part";render();m.innerHTML="<b>Part-payment recorded.</b> ₹680 stays open and reminders continue for the balance."};
+   $("wo").onclick=function(){inv[0].s="paid";matched++;render();m.innerHTML="<b>Matched with ₹680 written off.</b> The adjustment is logged for the accountant."};}
+ },1200)}
+$("payfull").onclick=function(){pay(true)};$("payshort").onclick=function(){pay(false)};
+init();
+</script></body></html>
